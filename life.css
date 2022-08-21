@@ -1,0 +1,18 @@
+.live {
+    background-color:  yellow;
+}
+
+.dead {
+    background-color: lightgrey;
+}
+
+#life {
+    border: 1px solid solid;
+    border-collapse:  collapse;
+}
+
+#life td {
+    border: 1px solid black;
+    height: 10px;
+    width: 10px;
+}
