@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', e => {
 class Life {
     constructor(w, h, boardSelector){
         const rows = [];
-        const statesMapping = {};
+        const cells = {};
         
         for(let i = 0; i < h; i++){
             let row = document.createElement('tr');
@@ -30,23 +30,15 @@ class Life {
                 cell.classList.add('dead');
                 const xyStr = `${j}:${i}`;
                 cell.addEventListener('click', e => {
-                    const c = e.target;
-                    const classList = c.classList;
-                    if(classList.contains('dead')){
-                        classList.replace('dead', 'live');
-                        statesMapping[xyStr].state = 1;
-                    } else {
-                        classList.replace('live', 'dead');
-                        statesMapping[xyStr].state = 0;
-                    }
+                    cells[xyStr].changeState();
                 });
                 row.append(cell);
-                statesMapping[xyStr] = new Cell(0, cell);
+                cells[xyStr] = new Cell(0, cell);
             }
             rows.push(row)
         }
 
-        this.statesMapping = statesMapping;
+        this.cells = cells;
         const board = document.querySelector(boardSelector);
         for(let row of rows){
             board.append(row);
@@ -61,8 +53,8 @@ class Life {
     // получение списка клеток, состояние которых нужно изменить в след. поколении
     _getUpdates(){
         const updates = [];
-        for(let s in this.statesMapping){
-            const cell = this.statesMapping[s]
+        for(let s in this.cells){
+            const cell = this.cells[s]
             const xy = s.split(':');
             const x = Number(xy[0]);
             const y = Number(xy[1]);
@@ -75,7 +67,7 @@ class Life {
             ];
             let statesSum = 0; // сумма состояний соседей
             for(let n of neighbors){
-                const neighbor = this.statesMapping[`${n.x}:${n.y}`];
+                const neighbor = this.cells[`${n.x}:${n.y}`];
                 if(neighbor !== undefined){
                     statesSum += neighbor.state;
                 } 
@@ -97,7 +89,7 @@ class Life {
     // применение обновлений к карте состояний
     _applyUpdates(updates){
         for(let c of updates){
-            this.statesMapping[c].changeState();
+            this.cells[c].changeState();
         }
     }
 }
